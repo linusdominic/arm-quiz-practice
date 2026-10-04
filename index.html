@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ARM Quiz Practice: Lectures 1–3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Literata:opsz,wght@7..72,500;7..72,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --paper:#EEF2F6; --sheet:#FFFFFF; --ink:#1D2B4F; --muted:#56627F; --rule:#CCD5E2;
+  --hl:#FFE45C; --hl-ink:#1D2B4F; --red:#C42F38; --chip:#E3E9F2; --focus:#2F6FDE;
+  --serif:"Literata",Georgia,"Times New Roman",serif;
+  --sans:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121A2C; --sheet:#1A2440; --ink:#E6EBF5; --muted:#A3AECB; --rule:#33405F;
+    --hl:#E8CC37; --hl-ink:#14192A; --red:#FF6E73; --chip:#25304F; --focus:#7FA8FF;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121A2C; --sheet:#1A2440; --ink:#E6EBF5; --muted:#A3AECB; --rule:#33405F;
+  --hl:#E8CC37; --hl-ink:#14192A; --red:#FF6E73; --chip:#25304F; --focus:#7FA8FF;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:660px;margin:0 auto;padding:28px 20px 48px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:28px 26px 26px;position:relative}
+.sheet::before{content:"";position:absolute;top:0;bottom:0;left:52px;width:1px;background:var(--red);opacity:.28}
+@media (max-width:520px){.sheet{padding:22px 18px 20px}.sheet::before{display:none}}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,6vw,38px);line-height:1.12;margin:0 0 8px;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 22px;max-width:52ch}
+h2{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 12px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.opt:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.modes{display:grid;gap:10px;margin:0 0 22px}
+.mode{display:flex;justify-content:space-between;align-items:baseline;gap:12px;width:100%;text-align:left;background:transparent;border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.mode:hover{border-color:var(--ink)}
+.mode[aria-pressed="true"]{border:2px solid var(--ink);padding:13px 15px}
+.mode b{font-weight:700}
+.mode span{color:var(--muted);font-size:15px;white-space:nowrap}
+.primary{background:var(--ink);color:var(--sheet);border:0;border-radius:6px;padding:13px 22px;font-weight:700}
+.primary:hover{opacity:.92}
+.ghost{background:transparent;border:1px solid var(--rule);border-radius:6px;padding:12px 18px}
+.ghost:hover{border-color:var(--ink)}
+.best{color:var(--muted);font-size:15px;margin:14px 0 0}
+.topbar{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:15px;color:var(--muted);margin-bottom:10px}
+.track{height:4px;background:var(--chip);border-radius:2px;overflow:hidden;margin-bottom:24px}
+.track i{display:block;height:100%;background:var(--ink);width:0;transition:width .3s ease}
+.tag{display:inline-block;font-size:13px;background:var(--chip);border-radius:3px;padding:2px 8px;margin-bottom:12px;color:var(--muted)}
+.q{font-family:var(--serif);font-weight:500;font-size:clamp(20px,4.4vw,23px);line-height:1.38;margin:0 0 20px}
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:transparent;border:1px solid var(--rule);border-radius:6px;padding:12px 14px;line-height:1.4}
+.opt:hover:not([disabled]){border-color:var(--ink)}
+.opt[disabled]{cursor:default}
+.key{flex:0 0 auto;width:26px;height:26px;border:1px solid var(--rule);border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--muted);margin-top:-1px}
+.txt{background-image:linear-gradient(transparent 12%,var(--hl) 12%,var(--hl) 88%,transparent 88%);background-repeat:no-repeat;background-size:0% 100%;padding:0 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.opt.right .txt{background-size:100% 100%;color:var(--hl-ink);transition:background-size .5s cubic-bezier(.2,.7,.2,1)}
+.opt.right{border-color:var(--ink)}
+.opt.right .key{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.opt.wrong .txt{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px;color:var(--muted)}
+.opt.wrong .key{border-color:var(--red);color:var(--red)}
+.opt.dim{opacity:.55}
+.feedback{margin:20px 0 0;border-left:3px solid var(--ink);padding:4px 0 4px 14px}
+.feedback.bad{border-left-color:var(--red)}
+.verdict{font-weight:700;margin:0 0 4px}
+.why{margin:0;color:var(--ink)}
+.next-row{display:flex;justify-content:flex-end;margin-top:22px}
+.score{font-family:var(--serif);font-weight:600;font-size:clamp(34px,8vw,48px);line-height:1;margin:0 0 6px}
+.breakdown{list-style:none;padding:0;margin:18px 0 24px;border-top:1px solid var(--rule)}
+.breakdown li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)}
+.missed{list-style:none;padding:0;margin:8px 0 24px;display:grid;gap:14px}
+.missed li{border-left:3px solid var(--red);padding:2px 0 2px 14px}
+.missed .mq{font-family:var(--serif);font-weight:500;margin:0 0 4px}
+.missed .ma{margin:0 0 2px}
+.missed .ma mark{background:var(--hl);color:var(--hl-ink);padding:0 3px}
+.missed .mw{margin:0;color:var(--muted);font-size:15px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.hint{font-size:14px;color:var(--muted);margin:18px 0 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.opt.right .txt,.track i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="sheet" id="app" aria-live="polite"></div>
+</main>
+<script>
+// Each question: l = lecture, q = question, o = options (first one is correct; shown shuffled), why = explanation
+const BANK = [
+ {l:1,q:"Which source of knowledge is the \"6th sense\" or gut feeling?",o:["Intuition","Instinctual","Experience","Authority"],why:"Intuition is the 6th sense. Instinctual is knowledge we have from birth, experience comes from the five senses, and authority comes from God, religion, culture or tradition."},
+ {l:1,q:"Knowledge we have from birth comes from which source?",o:["Instinctual","Intuition","Reason","Experience"],why:"Instinctual knowledge is \"by birth\". Don't mix it up with intuition, which is a gut feeling."},
+ {l:1,q:"Reasoning that moves from specific examples to a general rule is called:",o:["Inductive","Deductive","Intuitive","Authoritative"],why:"Inductive goes from examples to a general rule (used in qualitative research). Deductive goes from a general rule to a specific case (used in quantitative research)."},
+ {l:1,q:"What does \"epistemology\" mean?",o:["The study of human knowledge","The study of what actually exists","The study of statistics","The study of research ethics"],why:"Epistemology is the study of human knowledge. \"Something which actually exists\" is the definition of reality."},
+ {l:1,q:"In the word RE-SEARCH, what does \"RE\" mean?",o:["Again, anew, or over again","Result","Review only","Report"],why:"RE means again or anew, and SEARCH means to examine closely. Research is searching again, carefully."},
+ {l:1,q:"Scientific research is NOT based on:",o:["Hunches and intuition","A step-by-step logical method","Gathering and analysing data","Conclusions based on facts"],why:"Scientific research follows a logical, organised, rigorous method. It is not based on hunches, experience or intuition, though these may play a part in final decisions."},
+ {l:1,q:"Who defined research as methods applied systematically \"to produce scientifically based knowledge about the social world\"?",o:["Neuman (2007)","Cooper & Schindler (2010)","Collis & Hussey (2003)","Busha & Harter"],why:"That definition is Neuman (2007). Cooper & Schindler defined business research, Collis & Hussey gave the problem-identification steps, and Busha & Harter defined a research proposal."},
+ {l:1,q:"Which is a feature of QUANTITATIVE research?",o:["Large sample with closed-ended questions","Small sample with open-ended questions","Builds a theory using an inductive process","Shows multiple versions of reality"],why:"Quantitative research uses large samples, structured closed questions, statistics and a deductive process. The other options describe qualitative research."},
+ {l:1,q:"Qualitative research mainly uses which process?",o:["Inductive, to build a theory or model","Deductive, to test a hypothesis","Inferential statistics","Random experiments"],why:"Qualitative research is inductive: it builds a theory from in-depth information about a few cases."},
+ {l:1,q:"How does quantitative research view reality in its results?",o:["A single reality, an absolute truth","Many versions of reality","Reality cannot be known","Reality depends on the researcher's feelings"],why:"Quantitative results show a single reality (absolute truth) and can be generalised. Qualitative results show multiple versions of reality and are not generalised."},
+ {l:1,q:"Using measurements from a sample to make generalisations about the larger population is called:",o:["Inferential statistics","Descriptive statistics","Qualitative analysis","Intuition"],why:"Inferential statistics use a sample to draw conclusions about the whole population. They are central to quantitative research."},
+ {l:1,q:"Which description fits OBJECTIVE research?",o:["Unbiased, factual and verifiable","Coloured by personal feelings","Equivalent to opinions","Non-factual and non-verifiable"],why:"Objective = unbiased, not coloured by feelings, equivalent to facts, verifiable. The other options describe subjective research."},
+ {l:1,q:"Which of these is NOT listed as a characteristic of good research?",o:["A very large sample size","Clearly defined purpose","High ethical standards","Limitations addressed"],why:"The 9 characteristics are: clear purpose, detailed process, planned design, high ethics, limitations addressed, adequate analysis, unambiguous presentation, justified conclusions, references. Sample size is not on the list."},
+ {l:1,q:"According to Cooper & Schindler (2010), business research mainly helps:",o:["Decision-makers take the right actions to maximise business performance","Professors publish more papers","Students pass exams","Governments collect taxes"],why:"Business research acquires, analyses and shares business information, giving decision-makers insights so the organisation takes appropriate action and maximises performance."},
+ {l:1,q:"What is the main purpose of APPLIED research?",o:["To solve a current problem faced by a manager at work","To expand general knowledge for society","To build theories from small samples","To review literature only"],why:"Applied research solves a real, current problem in a specific organisation. Expanding general knowledge is the purpose of basic research."},
+ {l:1,q:"Basic (pure) research findings are mainly of value to:",o:["Society in general","One particular manager","Only the company that paid for it","Only the government"],why:"Basic research expands general knowledge of business and management, with value to society in general. Applied research findings are of practical value to managers."},
+ {l:1,q:"\"Why did iPod sales fall by 6% in 2009 after rising 200%?\" is an example of:",o:["Applied research","Basic research","Qualitative research only","Subjective research"],why:"It is a specific company's current problem that a manager wants to solve, so it is applied research."},
+ {l:1,q:"\"The relationship between adolescent self-esteem and alcoholism in parents\" is an example of:",o:["Basic research","Applied research","Industry analysis","A research proposal"],why:"It studies a general relationship, not a specific organisation's problem, so it is basic. It was the only basic example in the slide exercise."},
+ {l:1,q:"\"The effectiveness of recovering-alcoholic counsellors at the Rosewood Recovery Center\" is an example of:",o:["Applied research","Basic research","Objective research","Inductive research"],why:"It focuses on a specific named organisation (Rosewood Recovery Center), so it is applied research."},
+ {l:1,q:"\"Technological disruption and digital transformation\" is listed as which type of challenge?",o:["Economic","Social","Environmental","Political"],why:"The economic challenges are market volatility, rising costs, and technological disruption and digital transformation."},
+ {l:1,q:"\"Labour shortages and skills gaps\" is listed as which type of challenge?",o:["Social","Economic","Environmental","Legal"],why:"The social challenges are labour shortages and skills gaps, equity, diversity and inclusion, and changing consumer expectations."},
+ {l:1,q:"In the standard report structure, which chapter comes right after the Introduction?",o:["Industrial analysis","Methodology","Data analysis","Discussion"],why:"The order is: Introduction, Industrial analysis, Methodology, Data analysis, Discussion, Conclusion/recommendations."},
+
+ {l:2,q:"Knowing WHY and HOW facts connect, and where the picture is incomplete, is called:",o:["Understanding","Knowledge","Epistemology","Data"],why:"Knowledge = knowing WHAT (facts, studies, results). Understanding = knowing WHY and HOW."},
+ {l:2,q:"Which is NOT one of the four things you must understand about a research problem?",o:["How many authors have studied it","The nature of the problem","The impact of the problem","The contribution of your research"],why:"You must understand the problem's nature, its impact, the need for research, and your research's contribution."},
+ {l:2,q:"Where are literature gaps MOSTLY found in a research paper?",o:["Introduction, literature discussion, discussion and future areas of study","Title, abstract and keywords","References and appendices","Tables and figures"],why:"The slide lists four places: introduction, literature discussion, discussion, and future areas of study (often the limitations section)."},
+ {l:2,q:"A literature gap is best described as:",o:["An area that has not yet been explored or is under-explored","A mistake in a published paper","A missing reference in a report","A difference between two authors' opinions"],why:"The gap is the missing piece in the research literature: something not studied yet or studied too little."},
+ {l:2,q:"Which of these can be a literature gap?",o:["A different population or sample (size, type, location)","A spelling mistake in the paper","The journal's page design","The author's university"],why:"Gaps can be about further study areas, the population or sample, the research method, data collection or analysis, or other variables and conditions."},
+ {l:2,q:"In Collis & Hussey's (2003) steps, what is step 1?",o:["Read literature, reflect, discuss and identify gaps","Test feasibility","Eliminate impractical questions","Move on to research design"],why:"Step 1 is to read literature, reflect, discuss and identify gaps. Then generate questions, check if answered, test feasibility, eliminate impractical ones, and check if a suitable problem exists."},
+ {l:2,q:"In Collis & Hussey's steps, if your questions have NOT already been answered in the literature, what comes next?",o:["Test feasibility","Write the conclusion","Start data analysis","Go back to step 1"],why:"If the questions are new (not answered), step 4 is to test feasibility. If they were already answered, you go back."},
+ {l:2,q:"According to Busha & Harter, a research proposal is:",o:["A document describing the essential features of a future study and the strategy to carry it out","A summary of results after a study is finished","A list of references","The final project presentation"],why:"A proposal describes a FUTURE study: its essential features (such as aims and objectives) and the plan for doing it."},
+ {l:2,q:"Which is a suggested AI/technology research area in Lecture 2?",o:["AI recruitment and selection","Work-life balance","Decent work environment","Diversity, equity and inclusion"],why:"The AI/technology areas are HR and business analytics, AI recruitment/selection, and the dark side of generative AI. The other options are sustainability areas."},
+ {l:2,q:"Which of these is listed as a source for selecting a research problem?",o:["Results are not fulfilling the targets","A random topic from the internet","Whatever is easiest to write","The longest paper in the library"],why:"Sources include your own observation and practice, evaluating programmes, analysing policies, results not meeting targets, developing a new product or system, and literature gaps."},
+
+ {l:3,q:"Where do applied research problems mainly come from?",o:["Real-life business problems and visiting organisations","Only past theories","Only textbooks","Random guessing"],why:"Applied problems come from real-life business problems, often found by visiting organisations to solve a problem that exists there."},
+ {l:3,q:"In the 5W + 1H technique, what does \"Where?\" represent?",o:["Place","Purpose","People","Timing"],why:"What = purpose, Where = place, Who = people, When = sequence/timing, Why = reason, How = mode or method."},
+ {l:3,q:"In the 5W + 1H technique, what does \"When?\" represent?",o:["Sequence or timing","Place","Reason","Mode"],why:"When = sequence or timing, such as a current or historical view, or a period of life."},
+ {l:3,q:"In the 5W + 1H technique, what does \"How?\" represent?",o:["Mode, meaning the method","Reason","Purpose","Place"],why:"How = mode, meaning the method: quantitative (relationships), qualitative (experiences) or descriptive."},
+ {l:3,q:"Narrowing \"Consumer buying intention\" to \"young females\" answers which question?",o:["Who?","What?","Where?","Why?"],why:"Who? is about the target audience: age, gender, race or ethnicity."},
+ {l:3,q:"Which research topic follows the guidelines from Lecture 3?",o:["Exploring New Trends in E-advertising in Pakistan","What is the impact of social media on sales?","The Adverse Effect of Smoking on Employees","Social Media"],why:"Good topics start with words like Exploring, Identifying or An Analysis of. Avoid question topics, negative words, and topics that are too broad."},
+ {l:3,q:"Why should you avoid a topic like \"The Adverse Effect of Smoking…\"?",o:["Negative words may show researcher bias","It is too short","It has no organisation name","Smoking cannot be researched"],why:"Negative-meaning words such as \"adverse\" may show researcher bias."},
+ {l:3,q:"Why should you avoid a topic starting \"What is the impact of…?\"",o:["It may be a research question, not a topic","It is too long","It uses positive words","It shows researcher bias"],why:"A topic written as a question may be a research question rather than a research topic."},
+ {l:3,q:"In Lecture 3's sustainability dimensions, \"circular economy\" is listed under:",o:["Economic","Environmental","Social","Technological"],why:"Economic = cost-efficiency, long-term viability, circular economy. Many students wrongly pick environmental."},
+ {l:3,q:"\"Community impact, equity, labour conditions\" is which sustainability dimension?",o:["Social","Economic","Environmental","Governance"],why:"Social = community impact, equity, labour conditions. Environmental = resource conservation, pollution reduction."},
+ {l:3,q:"In the textile firm example, \"poor labour conditions and unfair wages\" is a problem of:",o:["Social sustainability","Energy consumption","Chemical toxicity","Waste management"],why:"The fifth textile problem is social sustainability: fair labour practices and supply chain transparency."},
+ {l:3,q:"In the Nestlé Pakistan example, what is the research problem about?",o:["Supply chain disruptions affecting operational efficiency and customer satisfaction","Hiring new employees","Designing a new logo","Moving the head office"],why:"The topic was \"Assessing the Impact of Supply Chain Disruptions on Operational Efficiency and Customer Satisfaction: A Case Study of Nestlé Pakistan\"."},
+ {l:3,q:"For the applied final project, in which week is the project proposal due?",o:["Week 9","Week 5","Week 15","Week 1"],why:"Step 1, identifying the problem, is in week 5. Step 2, the proposal, is in week 9. Step 3, the final report and presentation, is in week 15."}
+];
+
+const MODES = [
+  {id:"quick", name:"Quick round", desc:"10 random questions", pick:()=>shuffle(BANK.slice()).slice(0,10)},
+  {id:"all", name:"All lectures", desc:BANK.length+" questions", pick:()=>shuffle(BANK.slice())},
+  {id:"l1", name:"Lecture 1: Research basics", desc:count(1)+" questions", pick:()=>shuffle(BANK.filter(x=>x.l===1))},
+  {id:"l2", name:"Lecture 2: Basic research problem", desc:count(2)+" questions", pick:()=>shuffle(BANK.filter(x=>x.l===2))},
+  {id:"l3", name:"Lecture 3: Applied problem and topic", desc:count(3)+" questions", pick:()=>shuffle(BANK.filter(x=>x.l===3))}
+];
+const LNAME = {1:"Lecture 1",2:"Lecture 2",3:"Lecture 3"};
+function count(l){return BANK.filter(x=>x.l===l).length}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function loadBest(){try{return JSON.parse(localStorage.getItem("armquiz-best")||"{}")||{}}catch(e){return {}}}
+function saveBest(mode,pct){try{const b=loadBest();if(!(mode in b)||pct>b[mode]){b[mode]=pct;localStorage.setItem("armquiz-best",JSON.stringify(b))}}catch(e){}}
+
+const app = document.getElementById("app");
+let state = {mode:"quick", set:[], i:0, answers:[], order:[], answered:false};
+
+function home(){
+  const best = loadBest();
+  app.innerHTML = `
+    <h1>ARM quiz practice</h1>
+    <p class="lede">Questions from Lectures 1 to 3 of Applied Research Methods. Pick a set, answer, and read the explanation after each one.</p>
+    <h2>Choose a set</h2>
+    <div class="modes" role="group" aria-label="Question sets">
+      ${MODES.map(m=>`<button class="mode" data-mode="${m.id}" aria-pressed="${m.id===state.mode}"><b>${m.name}</b><span>${m.desc}${best[m.id]!=null?` · best ${best[m.id]}%`:""}</span></button>`).join("")}
+    </div>
+    <button class="primary" id="start">Start quiz</button>
+    <p class="hint">Keyboard: press A–D or 1–4 to answer, Enter for the next question.</p>`;
+  app.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{state.mode=b.dataset.mode;app.querySelectorAll(".mode").forEach(x=>x.setAttribute("aria-pressed",x===b));}));
+  document.getElementById("start").addEventListener("click",()=>start(MODES.find(m=>m.id===state.mode).pick()));
+}
+
+function start(set){
+  state.set=set; state.i=0; state.answers=[]; question();
+}
+
+function question(){
+  const item = state.set[state.i];
+  const n = state.set.length;
+  state.order = shuffle([0,1,2,3]);
+  state.answered = false;
+  const correct = state.answers.filter(a=>a.ok).length;
+  app.innerHTML = `
+    <div class="topbar"><span>Question ${state.i+1} of ${n}</span><span>${correct} correct so far</span></div>
+    <div class="track" aria-hidden="true"><i style="width:${(state.i/n)*100}%"></i></div>
+    <span class="tag">${LNAME[item.l]}</span>
+    <p class="q" id="qtext">${esc(item.q)}</p>
+    <ul class="opts" role="list" aria-labelledby="qtext">
+      ${state.order.map((oi,k)=>`<li><button class="opt" data-k="${k}"><span class="key" aria-hidden="true">${"ABCD"[k]}</span><span class="txt">${esc(item.o[oi])}</span></button></li>`).join("")}
+    </ul>
+    <div id="fb"></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>choose(+b.dataset.k)));
+  const first = app.querySelector(".opt"); if(first) first.focus({preventScroll:true});
+}
+
+function choose(k){
+  if(state.answered) return;
+  state.answered = true;
+  const item = state.set[state.i];
+  const picked = state.order[k];
+  const ok = picked===0;
+  state.answers.push({item, ok, picked});
+  const btns = app.querySelectorAll(".opt");
+  btns.forEach((b,idx)=>{
+    b.disabled = true;
+    const oi = state.order[idx];
+    if(oi===0) b.classList.add("right");
+    else if(idx===k) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const last = state.i===state.set.length-1;
+  document.getElementById("fb").innerHTML = `
+    <div class="feedback ${ok?"":"bad"}">
+      <p class="verdict">${ok?"Correct.":"Not quite. The highlighted answer is correct."}</p>
+      <p class="why">${esc(item.why)}</p>
+    </div>
+    <div class="next-row"><button class="primary" id="next">${last?"See my score":"Next question"}</button></div>`;
+  const nx = document.getElementById("next");
+  nx.addEventListener("click",advance);
+  nx.focus({preventScroll:true});
+  nx.scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+
+function advance(){
+  if(state.i < state.set.length-1){ state.i++; question(); window.scrollTo(0,0); }
+  else results();
+}
+
+function results(){
+  const n = state.answers.length;
+  const right = state.answers.filter(a=>a.ok).length;
+  const pct = Math.round(right/n*100);
+  saveBest(state.mode, pct);
+  const byL = {};
+  state.answers.forEach(a=>{const l=a.item.l; byL[l]=byL[l]||{r:0,t:0}; byL[l].t++; if(a.ok) byL[l].r++;});
+  const missed = state.answers.filter(a=>!a.ok);
+  const msg = pct===100?"Perfect. You're ready.":pct>=80?"Strong result. Review the few you missed below.":pct>=60?"Good base. Go over the missed questions, then try again.":"Read the notes for the topics below, then retry the ones you missed.";
+  app.innerHTML = `
+    <div class="track" aria-hidden="true"><i style="width:100%"></i></div>
+    <p class="score">${right} out of ${n}</p>
+    <p class="lede">${msg}</p>
+    <ul class="breakdown">
+      ${Object.keys(byL).sort().map(l=>`<li><span>${LNAME[l]}</span><span>${byL[l].r} of ${byL[l].t} correct</span></li>`).join("")}
+    </ul>
+    ${missed.length?`<h2>What you missed</h2>
+    <ul class="missed">
+      ${missed.map(a=>`<li><p class="mq">${esc(a.item.q)}</p><p class="ma">Answer: <mark>${esc(a.item.o[0])}</mark></p><p class="mw">${esc(a.item.why)}</p></li>`).join("")}
+    </ul>`:""}
+    <div class="actions">
+      ${missed.length?`<button class="primary" id="retry">Retry the ${missed.length} I missed</button>`:""}
+      <button class="${missed.length?"ghost":"primary"}" id="again">Choose another set</button>
+    </div>`;
+  const r = document.getElementById("retry");
+  if(r) r.addEventListener("click",()=>start(shuffle(missed.map(a=>a.item))));
+  document.getElementById("again").addEventListener("click",home);
+  window.scrollTo(0,0);
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const opts = app.querySelectorAll(".opt");
+  if(opts.length && !state.answered){
+    const map = {a:0,b:1,c:2,d:3,"1":0,"2":1,"3":2,"4":3};
+    const k = map[e.key.toLowerCase()];
+    if(k!=null && k<opts.length){ e.preventDefault(); choose(k); }
+  }
+});
+
+home();
+</script>
+</body>
+</html>
